@@ -9,7 +9,6 @@ import {
   ATTRIBUTE_KEYS,
   ALL_TITLES,
   CHARACTER_CLASS_META,
-  type AchievementDefinition,
   type QuestLog,
   type UserAchievement,
 } from '@/types/database';
@@ -288,14 +287,14 @@ function Light3DEffectCanvas({ glowColor }: { glowColor: string }) {
 export function StatsPage() {
   const { user, profile } = useAuth();
   const [history, setHistory] = useState<QuestLog[]>([]);
-  const [achievements, setAchievements] = useState<UserAchievement[]>([]);
+  const [, setAchievements] = useState<UserAchievement[]>([]);
 
   const [soundMuted, setSoundMuted] = useState(false);
   const [activeModal, setActiveModal] = useState<'level' | 'xp' | 'coins' | 'streak' | null>(null);
   const [counterValue, setCounterValue] = useState<number>(0);
   const [isAirplaneFlying, setIsAirplaneFlying] = useState<boolean>(false);
 
-  // 🎮 Gaming Specific States (Boss HP, Abilities & Combo)
+  // 🎮 Gaming Specific States
   const [bossHp, setBossHp] = useState<number>(75);
   const [comboMultiplier, setComboMultiplier] = useState<number>(3);
   const [damagePopup, setDamagePopup] = useState<string | null>(null);
@@ -428,15 +427,12 @@ export function StatsPage() {
 
       {/* 🎮 TOP GAMER HUD HEADER BAR */}
       <div className="bg-neutral-950/90 border-2 border-cyan-500/50 p-4 rounded-3xl backdrop-blur-xl shadow-[0_0_30px_rgba(6,182,212,0.25)] relative overflow-hidden">
-        {/* Neon HUD Corner Accents */}
         <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
         <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
         <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
         <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
 
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-          
-          {/* Player Gamer Status Banner */}
           <div className="flex items-center gap-4 w-full lg:w-auto">
             <div className="relative">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 via-purple-600 to-pink-500 p-0.5 shadow-[0_0_20px_rgba(6,182,212,0.8)] animate-pulse">
@@ -459,7 +455,6 @@ export function StatsPage() {
                 </Badge>
               </div>
 
-              {/* Gamer HP & MP Vitals */}
               <div className="flex items-center gap-4 text-xs font-bold">
                 <div className="flex items-center gap-1.5 w-28">
                   <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 animate-pulse" />
@@ -480,7 +475,6 @@ export function StatsPage() {
             </div>
           </div>
 
-          {/* Gamer Quick Skill Deck (Q, W, E, R Keys) */}
           <div className="flex items-center gap-2 bg-neutral-900/90 p-2 rounded-2xl border border-purple-500/40 shadow-inner">
             <span className="text-[10px] text-purple-300 font-black tracking-widest px-1 uppercase">SKILLS</span>
             {[
@@ -514,7 +508,6 @@ export function StatsPage() {
             })}
           </div>
 
-          {/* Sound Effect Toggle */}
           <button
             onClick={() => {
               triggerClickSFX();
@@ -553,7 +546,6 @@ export function StatsPage() {
           </div>
         </div>
 
-        {/* Interactive Boss Hit Button & Damage Float */}
         <div className="relative">
           {damagePopup && (
             <div className="absolute -top-8 left-1/2 -translate-x-1/2 font-black text-yellow-300 text-lg animate-ping pointer-events-none drop-shadow-[0_0_8px_rgba(234,179,8,1)]">
@@ -573,8 +565,6 @@ export function StatsPage() {
 
       {/* 🕹️ Top Stat 3D Animated Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        {/* Level Progress Stat Card */}
         <button
           onClick={() => openModal('level')}
           onMouseEnter={() => triggerHoverSFX()}
@@ -593,7 +583,6 @@ export function StatsPage() {
           </p>
         </button>
 
-        {/* Lifetime XP Stat Card */}
         <button
           onClick={() => openModal('xp')}
           onMouseEnter={() => triggerHoverSFX()}
@@ -610,7 +599,6 @@ export function StatsPage() {
           <p className="text-xs text-cyan-200/80 mt-1 font-medium">Total experience earned</p>
         </button>
 
-        {/* Coins Stat Card */}
         <button
           onClick={() => openModal('coins')}
           onMouseEnter={() => triggerHoverSFX()}
@@ -627,7 +615,6 @@ export function StatsPage() {
           <p className="text-xs text-amber-200/80 mt-1 font-medium">Currency earned from quests</p>
         </button>
 
-        {/* Streak Stat Card with Gaming Combo Badge */}
         <button
           onClick={() => openModal('streak')}
           onMouseEnter={() => triggerHoverSFX()}
@@ -643,7 +630,6 @@ export function StatsPage() {
           <p className="text-3xl font-black text-white drop-shadow-[0_2px_4px_#000]">{profile.streak_days} DAYS</p>
           <p className="text-xs text-orange-200/80 mt-1 font-medium">Consecutive daily login</p>
         </button>
-
       </div>
 
       {/* Character Attributes Card */}
@@ -727,142 +713,72 @@ export function StatsPage() {
       <Card className="bg-neutral-950/80 border-2 border-cyan-500/30 backdrop-blur-xl">
         <CardHeader title="Quest Breakdown" subtitle="Completions by difficulty" icon={<Award className="w-5 h-5 text-cyan-400" />} />
         <div className="space-y-3">
-          {['Trivial', 'Easy', 'Normal', 'Hard', 'Epic'].map((diff, i) => (
-            <div key={diff} className="flex items-center gap-4">
-              <span className="text-sm font-bold text-neutral-300 w-16">{diff}</span>
-              <div className="flex-1">
-                <ProgressBar
-                  value={difficultyCounts[diff.toLowerCase()] ?? 0}
-                  max={Math.max(1, ...Object.values(difficultyCounts))}
-                  size="sm"
-                  color={( ['neutral', 'success', 'primary', 'warning', 'error'] as const )[i]}
-                />
+          {['Trivial', 'Easy', 'Normal', 'Hard', 'Epic'].map((diff) => {
+            const count = difficultyCounts[diff] || 0;
+            return (
+              <div key={diff} className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/50 border border-neutral-800">
+                <span className="text-sm font-medium text-neutral-300">{diff}</span>
+                <span className="text-sm font-bold text-cyan-400">{count} Completed</span>
               </div>
-              <span className="text-sm font-mono text-cyan-300 font-bold w-8 text-right">{difficultyCounts[diff.toLowerCase()] ?? 0}</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Card>
 
-      {/* Achievements Card */}
-      <Card className="bg-neutral-950/80 border-2 border-yellow-500/30 backdrop-blur-xl shadow-[0_0_25px_rgba(234,179,8,0.15)]">
-        <CardHeader title="Achievements" subtitle={`${achievements.length} unlocked`} icon={<Award className="w-5 h-5 text-yellow-400" />} />
-        {achievements.length === 0 ? (
-          <p className="py-8 text-center text-sm text-neutral-500">Complete quests to unlock achievements.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {achievements.map((item) => {
-              const achievement = item.achievement as AchievementDefinition | undefined;
-              return (
-                <div key={`${item.user_id}-${item.achievement_id}`} className="rounded-xl border border-yellow-500/30 bg-yellow-500/5 p-3.5 flex items-start gap-3">
-                  <Award className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5 drop-shadow-[0_0_8px_rgba(234,179,8,0.8)]" />
-                  <div>
-                    <p className="text-sm font-bold text-white">{achievement?.name ?? 'Achievement'}</p>
-                    <p className="text-xs text-neutral-400 mt-1">{achievement?.description ?? 'Milestone unlocked.'}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </Card>
+      {/* 🔮 TOP-ALIGNED INTERACTIVE MODALS */}
+      {activeModal && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-10 sm:pt-16 p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md bg-neutral-950 border-2 border-purple-500/60 p-6 rounded-3xl text-center shadow-[0_10px_50px_rgba(168,85,247,0.5)] overflow-hidden animate-in fade-in slide-in-from-top-8 duration-300">
+            <Light3DEffectCanvas glowColor={activeModal === 'coins' ? 'rgba(245,158,11,0.6)' : activeModal === 'xp' ? 'rgba(6,182,212,0.6)' : activeModal === 'streak' ? 'rgba(249,115,22,0.6)' : 'rgba(168,85,247,0.6)'} />
+            
+            <button
+              onClick={() => setActiveModal(null)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
 
-      {/* ========================================================================= */}
-      {/* 🔮 Dynamic 3D Interactive Modals */}
-      {/* ========================================================================= */}
+            <div className="relative z-10 space-y-4">
+              {activeModal === 'level' && (
+                <>
+                  <Trophy className="w-14 h-14 text-yellow-400 mx-auto drop-shadow-[0_0_15px_rgba(250,204,21,0.8)] animate-bounce" />
+                  <h3 className="text-2xl font-black tracking-wider uppercase">LEVEL {profile.level} REACHED</h3>
+                  <p className="text-sm text-neutral-300">Keep completing quests to gain more XP and unlock higher tiers!</p>
+                </>
+              )}
 
-      {activeModal === 'level' && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-lg flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md bg-neutral-950 border-4 border-purple-400 rounded-3xl p-6 shadow-[0_0_80px_rgba(168,85,247,0.8)] text-center overflow-hidden">
-            <Light3DEffectCanvas glowColor="rgba(168, 85, 247, 0.4)" />
-            <div className="relative z-10">
-              <button onClick={() => setActiveModal(null)} className="absolute top-0 right-0 bg-neutral-800 text-neutral-300 p-2 rounded-xl">
-                <X className="w-5 h-5" />
-              </button>
-              <div className="w-20 h-20 mx-auto bg-gradient-to-tr from-purple-600 to-yellow-400 border-4 border-black rounded-3xl flex items-center justify-center mb-3 shadow-[0_0_30px_rgba(234,179,8,0.8)] animate-pulse">
-                <Trophy className="w-10 h-10 text-black" />
-              </div>
-              <h3 className="text-2xl font-black text-purple-300 uppercase">LEVEL PROGRESS</h3>
-              <p className="text-xs text-purple-200/80 mb-5">Keep completing quests to gain level upgrades</p>
-              <Button onClick={() => setActiveModal(null)} className="w-full bg-yellow-400 text-black font-black border-2 border-black">
-                CONTINUE
+              {activeModal === 'xp' && (
+                <>
+                  {isAirplaneFlying && <Plane className="w-10 h-10 text-cyan-400 mx-auto animate-pulse" />}
+                  <Star className="w-14 h-14 text-cyan-400 mx-auto drop-shadow-[0_0_15px_rgba(6,182,212,0.8)]" />
+                  <h3 className="text-2xl font-black tracking-wider uppercase">LIFETIME XP</h3>
+                  <div className="text-4xl font-black text-cyan-300 font-mono">{counterValue.toLocaleString()}</div>
+                </>
+              )}
+
+              {activeModal === 'coins' && (
+                <>
+                  <Coins className="w-14 h-14 text-amber-400 mx-auto drop-shadow-[0_0_15px_rgba(245,158,11,0.8)] animate-spin" />
+                  <h3 className="text-2xl font-black tracking-wider uppercase">TOTAL COINS</h3>
+                  <div className="text-4xl font-black text-amber-300 font-mono">{counterValue.toLocaleString()}</div>
+                </>
+              )}
+
+              {activeModal === 'streak' && (
+                <>
+                  <Flame className="w-14 h-14 text-orange-500 mx-auto drop-shadow-[0_0_15px_rgba(249,115,22,0.8)] animate-pulse" />
+                  <h3 className="text-2xl font-black tracking-wider uppercase">CURRENT STREAK</h3>
+                  <div className="text-4xl font-black text-orange-400 font-mono">{counterValue} DAYS</div>
+                </>
+              )}
+
+              <Button onClick={() => setActiveModal(null)} className="w-full mt-4 bg-purple-600 hover:bg-purple-500 font-bold">
+                CLOSE
               </Button>
             </div>
           </div>
         </div>
       )}
-
-      {activeModal === 'xp' && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-lg flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="relative w-full max-w-sm bg-neutral-950 border-4 border-cyan-400 rounded-3xl p-6 shadow-[0_0_80px_rgba(6,182,212,0.8)] text-center overflow-hidden">
-            <Light3DEffectCanvas glowColor="rgba(6, 182, 212, 0.4)" />
-            <div className="relative z-10">
-              <button onClick={() => setActiveModal(null)} className="absolute top-0 right-0 bg-neutral-800 text-neutral-300 p-2 rounded-xl">
-                <X className="w-5 h-5" />
-              </button>
-              <div className={`my-3 flex justify-center ${isAirplaneFlying ? 'animate-bounce' : ''}`}>
-                <div className="w-20 h-20 rounded-3xl bg-cyan-400 border-4 border-black flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.8)]">
-                  <Plane className="w-10 h-10 text-black -rotate-45" />
-                </div>
-              </div>
-              <h3 className="text-xl font-black text-white mt-2">TOTAL XP COLLECTED</h3>
-              <div className="my-5 py-4 bg-neutral-900/90 border-2 border-cyan-400/80 rounded-2xl">
-                <span className="text-4xl font-black text-cyan-300 font-mono">{counterValue.toLocaleString()}</span>
-              </div>
-              <Button onClick={() => setActiveModal(null)} className="w-full bg-cyan-400 text-black font-black border-2 border-black">
-                ACCEPT XP
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeModal === 'coins' && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-lg flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="relative w-full max-w-sm bg-neutral-950 border-4 border-amber-400 rounded-3xl p-6 shadow-[0_0_80px_rgba(245,158,11,0.8)] text-center overflow-hidden">
-            <Light3DEffectCanvas glowColor="rgba(245, 158, 11, 0.45)" />
-            <div className="relative z-10">
-              <button onClick={() => setActiveModal(null)} className="absolute top-0 right-0 bg-neutral-800 text-neutral-300 p-2 rounded-xl">
-                <X className="w-5 h-5" />
-              </button>
-              <div className="w-20 h-20 mx-auto bg-amber-400 border-4 border-black rounded-full flex items-center justify-center mb-3">
-                <Coins className="w-10 h-10 text-black" />
-              </div>
-              <h3 className="text-2xl font-black text-amber-300 uppercase">GOLD BANK</h3>
-              <div className="my-5 py-4 bg-neutral-900/90 border-2 border-amber-400/80 rounded-2xl">
-                <span className="text-4xl font-black text-yellow-300 font-mono">{counterValue.toLocaleString()}</span>
-              </div>
-              <Button onClick={() => setActiveModal(null)} className="w-full bg-amber-400 text-black font-black border-2 border-black">
-                COLLECT ALL
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeModal === 'streak' && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-lg flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="relative w-full max-w-sm bg-neutral-950 border-4 border-orange-500 rounded-3xl p-6 shadow-[0_0_80px_rgba(249,115,22,0.8)] text-center overflow-hidden">
-            <Light3DEffectCanvas glowColor="rgba(249, 115, 22, 0.45)" />
-            <div className="relative z-10">
-              <button onClick={() => setActiveModal(null)} className="absolute top-0 right-0 bg-neutral-800 text-neutral-300 p-2 rounded-xl">
-                <X className="w-5 h-5" />
-              </button>
-              <div className="w-20 h-20 mx-auto bg-orange-500 border-4 border-black rounded-full flex items-center justify-center mb-3">
-                <Flame className="w-10 h-10 text-black" />
-              </div>
-              <h3 className="text-2xl font-black text-orange-400 uppercase">DAILY STREAK</h3>
-              <div className="my-5 py-4 bg-neutral-900/90 border-2 border-orange-500/80 rounded-2xl">
-                <span className="text-4xl font-black text-orange-400 font-mono">{counterValue} DAYS</span>
-              </div>
-              <Button onClick={() => setActiveModal(null)} className="w-full bg-orange-500 text-black font-black border-2 border-black">
-                KEEP STREAK ALIVE
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { FeedbackProvider } from '@/context/FeedbackContext';
 import { AuthPage } from '@/components/auth/AuthPage';
@@ -16,7 +16,10 @@ import {
   Zap, 
   Gem, 
   Trophy, 
-  X 
+  X,
+  Sparkles,
+  Ghost,
+  Swords
 } from 'lucide-react';
 
 // ==========================================
@@ -81,7 +84,7 @@ class SoundEngine {
           osc.stop(now + i * 0.05 + 0.12);
         });
       }
-    } catch (e) {
+    } catch {
       // Audio fallback protection
     }
   }
@@ -90,7 +93,7 @@ class SoundEngine {
 export const audioFX = new SoundEngine();
 
 // ==========================================
-// 2. UNIFIED GLOBAL 3D DYNAMIC BACKGROUND
+// 2. ANIME & CARTOON ANIMATED DYNAMIC BACKGROUND
 // ==========================================
 function GameBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -112,31 +115,37 @@ function GameBackground() {
     };
     window.addEventListener('resize', handleResize);
 
-    const stars = Array.from({ length: 140 }, () => ({
+    // Anime Speed Lines & Flying Magical Sparkles
+    const particles = Array.from({ length: 60 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 2 + 0.5,
-      depth: Math.random() * 3 + 1,
-      opacity: Math.random(),
-      speed: Math.random() * 0.02 + 0.005,
+      radius: Math.random() * 4 + 1,
+      vy: -(Math.random() * 1.5 + 0.5),
+      vx: (Math.random() - 0.5) * 0.8,
+      color: ['#a855f7', '#06b6d4', '#f59e0b', '#ec4899'][Math.floor(Math.random() * 4)],
+      pulse: Math.random() * Math.PI,
     }));
 
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      stars.forEach((star) => {
-        star.opacity += star.speed;
-        if (star.opacity > 1 || star.opacity < 0.2) star.speed = -star.speed;
+      particles.forEach((p) => {
+        p.y += p.vy;
+        p.x += p.vx;
+        p.pulse += 0.05;
 
-        ctx.fillStyle = `rgba(147, 51, 234, ${Math.abs(star.opacity)})`;
-        ctx.shadowBlur = star.size * 4;
-        ctx.shadowColor = '#06b6d4';
+        if (p.y < 0) p.y = height;
+        if (p.x < 0 || p.x > width) p.x = Math.random() * width;
+
+        const dynamicRadius = p.radius + Math.sin(p.pulse) * 1.5;
+
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = p.color;
+        ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, Math.max(0.5, dynamicRadius), 0, Math.PI * 2);
         ctx.fill();
-
-        star.y += star.depth * 0.12;
-        if (star.y > height) star.y = 0;
+        ctx.shadowBlur = 0;
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -152,18 +161,18 @@ function GameBackground() {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-neutral-950">
-      {/* Dynamic Drifting Nebulas */}
-      <div className="absolute -top-32 -left-32 w-[650px] h-[650px] rounded-full bg-purple-900/30 blur-[140px] animate-pulse" />
-      <div className="absolute top-1/4 -right-32 w-[700px] h-[700px] rounded-full bg-cyan-900/25 blur-[150px] animate-pulse duration-1000" />
-      <div className="absolute -bottom-32 left-1/4 w-[750px] h-[750px] rounded-full bg-indigo-900/20 blur-[160px] animate-pulse duration-2000" />
+      {/* 🌸 Anime Floating Aura Orbs */}
+      <div className="absolute -top-32 -left-32 w-[650px] h-[650px] rounded-full bg-purple-600/30 blur-[140px] animate-pulse" />
+      <div className="absolute top-1/4 -right-32 w-[700px] h-[700px] rounded-full bg-cyan-600/25 blur-[150px] animate-pulse duration-1000" />
+      <div className="absolute -bottom-32 left-1/4 w-[750px] h-[750px] rounded-full bg-pink-600/20 blur-[160px] animate-pulse duration-2000" />
 
-      {/* Starfield Canvas */}
+      {/* Particle Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0" />
 
-      {/* Endless 3D Sci-Fi Perspective Grid Floor */}
-      <div className="absolute bottom-0 inset-x-0 h-[50vh] [perspective:900px] overflow-hidden opacity-35">
+      {/* ⚡ Anime Action Speed Grid Floor */}
+      <div className="absolute bottom-0 inset-x-0 h-[50vh] [perspective:900px] overflow-hidden opacity-30">
         <div 
-          className="w-[200%] -left-[50%] h-[250%] absolute top-0 bg-[linear-gradient(to_right,#a855f7_1px,transparent_1px),linear-gradient(to_bottom,#06b6d4_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [transform:rotateX(75deg)] origin-top animate-grid-scroll"
+          className="w-[200%] -left-[50%] h-[250%] absolute top-0 bg-[linear-gradient(to_right,#ec4899_1px,transparent_1px),linear-gradient(to_bottom,#06b6d4_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [transform:rotateX(75deg)] origin-top animate-grid-scroll"
           style={{
             maskImage: 'linear-gradient(to bottom, transparent, black 25%, black 85%, transparent)',
             WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 25%, black 85%, transparent)'
@@ -171,17 +180,33 @@ function GameBackground() {
         />
       </div>
 
-      {/* Ambient Floating 3D Arcade Sprites */}
-      <div className="absolute inset-0 pointer-events-none opacity-25">
-        <Coins className="absolute top-[12%] left-[4%] w-10 h-10 text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] animate-bounce" />
-        <Zap className="absolute top-[35%] right-[6%] w-12 h-12 text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.8)] animate-pulse" />
-        <Gem className="absolute bottom-[28%] left-[8%] w-10 h-10 text-purple-400 drop-shadow-[0_0_15px_rgba(192,132,252,0.8)] animate-bounce" />
-        <Trophy className="absolute bottom-[18%] right-[8%] w-12 h-12 text-emerald-400 drop-shadow-[0_0_20px_rgba(52,211,153,0.8)] animate-pulse" />
-        <Flame className="absolute top-[50%] left-[50%] w-10 h-10 text-orange-500 drop-shadow-[0_0_20px_rgba(249,115,22,0.8)] animate-ping" />
+      {/* 🎮 Floating Anime/Cartoon Arcade Sprites */}
+      <div className="absolute inset-0 pointer-events-none opacity-40">
+        <div className="absolute top-[12%] left-[5%] animate-bounce">
+          <Coins className="w-10 h-10 text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.9)]" />
+        </div>
+        <div className="absolute top-[35%] right-[6%] animate-pulse">
+          <Zap className="w-12 h-12 text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.9)]" />
+        </div>
+        <div className="absolute bottom-[28%] left-[8%] animate-bounce">
+          <Gem className="w-10 h-10 text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.9)]" />
+        </div>
+        <div className="absolute bottom-[18%] right-[8%] animate-pulse">
+          <Trophy className="w-12 h-12 text-emerald-400 drop-shadow-[0_0_20px_rgba(52,211,153,0.9)]" />
+        </div>
+        <div className="absolute top-[48%] left-[48%] animate-ping">
+          <Flame className="w-10 h-10 text-orange-500 drop-shadow-[0_0_20px_rgba(249,115,22,0.9)]" />
+        </div>
+        <div className="absolute top-[22%] left-[80%] animate-spin duration-3000">
+          <Sparkles className="w-8 h-8 text-yellow-300 drop-shadow-[0_0_12px_rgba(253,224,71,0.9)]" />
+        </div>
+        <div className="absolute bottom-[40%] right-[85%] animate-bounce">
+          <Ghost className="w-9 h-9 text-purple-400 drop-shadow-[0_0_15px_rgba(192,132,252,0.9)]" />
+        </div>
       </div>
 
-      {/* Cyber Scanline Line Effect */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.25)_51%)] bg-[size:100%_4px] pointer-events-none opacity-40" />
+      {/* Comic Halftone Dot Effect Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.1)_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none opacity-20" />
       
       {/* Dark Vignette Overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(5,5,8,0.85)_100%)]" />
@@ -190,7 +215,7 @@ function GameBackground() {
 }
 
 // ==========================================
-// 3. INTERACTIVE CANVAS STAT MODAL
+// 3. INTERACTIVE CARTOON/ANIME STAT MODAL
 // ==========================================
 interface StatModalProps {
   type: 'level' | 'xp' | 'coins' | 'gems' | null;
@@ -202,7 +227,7 @@ function StatModal({ type, onClose }: StatModalProps) {
   const [counter, setCounter] = useState(0);
 
   const statConfigs = {
-    level: { title: 'HERO LEVEL 42', val: 42, max: 'MAX 100', color: '#c084fc', icon: Flame, desc: 'Unlocks higher bounty difficulty and exclusive bazaar items.' },
+    level: { title: 'HERO LEVEL 42', val: 42, max: 'MAX 100', color: '#ec4899', icon: Flame, desc: 'Unlocks higher bounty difficulty and exclusive bazaar items.' },
     xp: { title: 'XP PROGRESSION', val: 8450, max: '10,000 XP', color: '#22d3ee', icon: Zap, desc: 'Earn XP by completing habits and active daily quests.' },
     coins: { title: 'GOLD VAULT', val: 1250, max: 'GOLD COINS', color: '#fbbf24', icon: Coins, desc: 'Spend in the Mystic Bazaar for gear upgrades & boosts.' },
     gems: { title: 'MYTHIC GEMS', val: 85, max: 'PREMIUM', color: '#a855f7', icon: Gem, desc: 'Rare currency awarded on mega streaks and achievements.' },
@@ -239,9 +264,9 @@ function StatModal({ type, onClose }: StatModalProps) {
     const particles = Array.from({ length: 35 }, () => ({
       x: 200,
       y: 150,
-      vx: (Math.random() - 0.5) * 5,
-      vy: (Math.random() - 0.5) * 5,
-      size: Math.random() * 3.5 + 1.5,
+      vx: (Math.random() - 0.5) * 6,
+      vy: (Math.random() - 0.5) * 6,
+      size: Math.random() * 4 + 1.5,
       life: 1,
     }));
 
@@ -249,7 +274,7 @@ function StatModal({ type, onClose }: StatModalProps) {
 
     const renderModalCanvas = () => {
       ctx.clearRect(0, 0, 400, 300);
-      angle += 0.012;
+      angle += 0.015;
 
       ctx.save();
       ctx.translate(200, 150);
@@ -259,7 +284,7 @@ function StatModal({ type, onClose }: StatModalProps) {
         ctx.moveTo(0, 0);
         ctx.arc(0, 0, 220, (i * Math.PI) / 6, ((i + 0.35) * Math.PI) / 6);
         ctx.closePath();
-        ctx.fillStyle = `${current.color}18`;
+        ctx.fillStyle = `${current.color}25`;
         ctx.fill();
       }
       ctx.restore();
@@ -267,12 +292,12 @@ function StatModal({ type, onClose }: StatModalProps) {
       particles.forEach((p) => {
         p.x += p.vx;
         p.y += p.vy;
-        p.life -= 0.018;
+        p.life -= 0.02;
         if (p.life <= 0) {
           p.x = 200;
           p.y = 150;
-          p.vx = (Math.random() - 0.5) * 5;
-          p.vy = (Math.random() - 0.5) * 5;
+          p.vx = (Math.random() - 0.5) * 6;
+          p.vy = (Math.random() - 0.5) * 6;
           p.life = 1;
         }
         ctx.fillStyle = current.color;
@@ -298,12 +323,12 @@ function StatModal({ type, onClose }: StatModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
       <div 
-        className="relative w-full max-w-md bg-neutral-900/95 border-2 rounded-3xl overflow-hidden p-6 shadow-2xl flex flex-col items-center text-center"
-        style={{ borderColor: current.color, boxShadow: `0 0 45px ${current.color}45` }}
+        className="relative w-full max-w-md bg-neutral-900/95 border-4 rounded-3xl overflow-hidden p-6 shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-200"
+        style={{ borderColor: current.color, boxShadow: `0 0 50px ${current.color}65` }}
       >
         <button 
           onClick={() => { audioFX.play('click'); onClose(); }}
-          className="absolute top-4 right-4 text-neutral-400 hover:text-white bg-neutral-800/80 p-2 rounded-full transition-colors z-10"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-white bg-neutral-800/80 p-2 rounded-full transition-colors z-10 border border-neutral-700"
         >
           <X className="w-5 h-5" />
         </button>
@@ -311,8 +336,8 @@ function StatModal({ type, onClose }: StatModalProps) {
         <canvas ref={modalCanvasRef} className="absolute inset-0 pointer-events-none" />
 
         <div 
-          className="relative z-10 w-20 h-20 rounded-2xl flex items-center justify-center mb-4 shadow-lg animate-bounce"
-          style={{ backgroundColor: `${current.color}25`, border: `2px solid ${current.color}` }}
+          className="relative z-10 w-20 h-20 rounded-2xl flex items-center justify-center mb-4 shadow-lg animate-bounce border-2"
+          style={{ backgroundColor: `${current.color}30`, borderColor: current.color }}
         >
           <IconComp className="w-10 h-10" style={{ color: current.color }} />
         </div>
@@ -324,7 +349,7 @@ function StatModal({ type, onClose }: StatModalProps) {
           {current.title}
         </h3>
 
-        <div className="relative z-10 text-5xl font-black my-4 tracking-tight" style={{ color: current.color }}>
+        <div className="relative z-10 text-5xl font-black my-4 tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" style={{ color: current.color }}>
           {counter.toLocaleString()}
         </div>
 
@@ -334,8 +359,8 @@ function StatModal({ type, onClose }: StatModalProps) {
 
         <button
           onClick={() => { audioFX.play('click'); onClose(); }}
-          className="relative z-10 px-8 py-3 rounded-xl font-bold uppercase tracking-wider text-black transition-all hover:scale-105 active:scale-95 shadow-lg"
-          style={{ backgroundColor: current.color, boxShadow: `0 0 20px ${current.color}80` }}
+          className="relative z-10 px-8 py-3 rounded-xl font-black uppercase tracking-wider text-black transition-all hover:scale-105 active:scale-95 shadow-lg border-2 border-black"
+          style={{ backgroundColor: current.color, boxShadow: `0 0 25px ${current.color}90` }}
         >
           Close
         </button>
@@ -345,17 +370,24 @@ function StatModal({ type, onClose }: StatModalProps) {
 }
 
 // ==========================================
-// 4. ORIGINAL LOADING SCREEN
+// 4. CARTOON ANIMATED LOADING SCREEN
 // ==========================================
 function LoadingScreen() {
   return (
     <div className="min-h-screen bg-neutral-950 flex items-center justify-center relative overflow-hidden">
       <GameBackground />
       <div className="flex flex-col items-center gap-4 z-10">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-700 flex items-center justify-center shadow-lg shadow-purple-600/30 animate-pulse">
-          <Flame className="w-9 h-9 text-white" />
+        <div className="relative">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-pink-500 via-purple-600 to-cyan-400 p-1 shadow-2xl shadow-pink-500/50 animate-bounce">
+            <div className="w-full h-full bg-neutral-950 rounded-[22px] flex items-center justify-center">
+              <Swords className="w-10 h-10 text-cyan-400 animate-pulse" />
+            </div>
+          </div>
+          <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-yellow-300 animate-spin" />
         </div>
-        <p className="font-display text-lg font-semibold text-neutral-400">Loading LifeForge Arcade...</p>
+        <p className="font-black text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-cyan-400 animate-pulse uppercase">
+          READYING ANIME ARENA...
+        </p>
       </div>
     </div>
   );
@@ -404,8 +436,8 @@ function AppContent() {
   };
 
   return (
-    <div className="relative min-h-screen bg-neutral-950 text-neutral-100 selection:bg-purple-500 selection:text-white">
-      {/* 1. Global 3D Background */}
+    <div className="relative min-h-screen bg-neutral-950 text-neutral-100 selection:bg-pink-500 selection:text-white">
+      {/* 1. Anime Cartoon 3D Background */}
       <GameBackground />
 
       {/* 2. Interactive Stat Modal Overlay */}
