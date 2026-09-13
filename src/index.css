@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-neutral-950 text-neutral-100 font-sans antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    @apply bg-primary-500/30 text-primary-100;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-900;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-700 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-600;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-neutral-900/60 backdrop-blur-xl border border-neutral-800;
+  }
+
+  .glass-card {
+    @apply bg-neutral-900/40 backdrop-blur-xl border border-neutral-800 rounded-2xl;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-gold {
+    @apply bg-gradient-to-r from-secondary-300 to-secondary-500 bg-clip-text text-transparent;
+  }
+
+  .shimmer-bg {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02) 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    background-size: 200% 100%;
+  }
+
+  .animate-lifeforge-run {
+    animation: lifeforgeRun 1.1s ease-in-out infinite alternate;
+  }
+
+  .animate-lifeforge-orb {
+    animation: lifeforgeOrb 1.1s ease-in-out infinite;
+  }
+
+  .animate-lifeforge-chest {
+    animation: lifeforgeChest 0.7s ease-in-out infinite;
+  }
+}
+
+@keyframes lifeforgeRun {
+  0% { transform: translate(-50%, 0) rotate(-2deg); }
+  100% { transform: translate(-50%, -8px) rotate(2deg); }
+}
+
+@keyframes lifeforgeOrb {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-10px) scale(1.12); }
+}
+
+@keyframes lifeforgeChest {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-7deg) scale(1.06); }
+  75% { transform: rotate(7deg) scale(1.06); }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-400 ring-offset-2 ring-offset-neutral-950;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+@keyframes gridScroll {
+  0% { transform: rotateX(75deg) translateY(0); }
+  100% { transform: rotateX(75deg) translateY(4rem); }
+}
+
+@keyframes float3d {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+@keyframes floatDelayed {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(-5deg); }
+}
+
+.animate-grid-scroll {
+  animation: gridScroll 3s linear infinite;
+}
+
+.animate-float-3d {
+  animation: float3d 5s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: floatSlow 7s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: floatDelayed 9s ease-in-out infinite 2s;
+}
+
+.animate-pulse-slow {
+  animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes gridScroll {
+  0% { transform: rotateX(75deg) translateY(0); }
+  100% { transform: rotateX(75deg) translateY(4rem); }
+}
+
+@keyframes float3d {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+.animate-grid-scroll {
+  animation: gridScroll 2.5s linear infinite;
+}
+
+.animate-float-3d {
+  animation: float3d 5s ease-in-out infinite;
+}
